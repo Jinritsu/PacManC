@@ -3,11 +3,11 @@
 #ifndef FONCTIONSPACMAN_H
 #define FONCTIONSPACMAN_H
 
-enum Object
-{ball,superball,cherry,strawberry,wallH,wallL};
+typedef enum Object
+{none,ball,superball,cherry,strawberry,wallH,wallL}Object;
 
-enum Person
-{pac_man,ghost}
+typedef enum Person
+{no_one,pac_man,ghost}Person;
 
 typedef struct Square
 {
@@ -16,6 +16,7 @@ typedef struct Square
 }Square;
 
 void initSquare(Square a_square);
-
+void initGrid(Square** grid, int largeur, int hauteur);
+void afficheGrid(Square** grid, int largeur, int hauteur);
 
 #endif
