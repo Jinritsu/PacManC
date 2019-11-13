@@ -1,0 +1,7 @@
+Choses à ajouter dans le PAC-MAN:
+grille de jeu: taille fixe(pour un départ), optionnellement: variable.
+le PAC-MAN, joueur: mouvement avec les directions (haut, bas, gauche, droite).
+les collectables: boules à récupérer. Vient les fruits appraissant aléatoirement.
+les ennemis: les fantômes 4 en toute, se balladant dans le niveau, à un intevalle régulier.
+si trou dans les murs -> passage de l'autre côté de la map.
+
