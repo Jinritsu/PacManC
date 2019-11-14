@@ -9,7 +9,7 @@ int main()
 {
 	Square sqrt;
 	initSquare(&sqrt);
-	sqrt.object = superball;
+	sqrt.object = strawberry;
 	afficheSquare(&sqrt);
 	printf("\n");
 	return 0;
