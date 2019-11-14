@@ -1,30 +1,15 @@
 #include "FonctionsPacMan.h"
 
 
-void initSquare(Square sqrt)
+void initSquare(Square *sqrt)
 {
-	sqrt.object = none;
-	sqrt.person = no_one;
+	sqrt->object = none;
+	//sqrt->person = no_one;
 }
 
-void initGrid(Square** grid, int largeur, int hauteur)
+void afficheSquare(Square *sqrt)
 {
-	 for(int i; i>largeur; i++)
-	{
-		for(int j; j>hauteur; j++)
-		{
-			initSquare(grid[i][j]);
-		}
-	}
-}
-
-void afficheGrid(Square** grid, int largeur, int hauteur)
-{
-	for(int i; i>largeur; i++)
-	{
-		for(int j; j>hauteur; j++)
-		{
-			switch(grid[i][j].object)
+	switch(sqrt->object)
 			{
 				case ball: printf("⋅");
 					break;
@@ -40,7 +25,5 @@ void afficheGrid(Square** grid, int largeur, int hauteur)
 					break;
 				default: printf(" ");
 			}
-		}
-		printf("\n");
-	}
 }
+

@@ -7,7 +7,10 @@
 
 int main()
 {
-	Square **grid=NULL;
-	initGrid(grid,LARGEUR,HAUTEUR);
+	Square sqrt;
+	initSquare(&sqrt);
+	sqrt.object = superball;
+	afficheSquare(&sqrt);
+	printf("\n");
 	return 0;
 }

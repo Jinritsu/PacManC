@@ -15,8 +15,7 @@ typedef struct Square
 	Person person;
 }Square;
 
-void initSquare(Square a_square);
-void initGrid(Square** grid, int largeur, int hauteur);
-void afficheGrid(Square** grid, int largeur, int hauteur);
+void initSquare(Square *sqrt);
+void afficheSquare(Square *sqrt);
 
 #endif
