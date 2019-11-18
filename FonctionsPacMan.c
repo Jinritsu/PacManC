@@ -40,7 +40,7 @@ void afficheSquare(Square *sqrt)
 				break;
 			case pac_man_right: printw("ᗧ");
 				break;
-			case ghost: printw("👻");
+			case ghost: printw("\u1649");
 				break;
 			default: printw(" ");
 		}
