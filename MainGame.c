@@ -58,24 +58,28 @@ int main()
 			}
 			else if (i == LARGEUR/4 && j == HAUTEUR/4)
 			{
+				grid[j][i].object=ball;
 				grid[j][i].person=ghost;
 				ghost_x[0]=i;
 				ghost_y[0]=j;
 			}
 			else if (i == LARGEUR*3/4 && j == HAUTEUR*3/4)
 			{
+				grid[j][i].object=ball;
 				grid[j][i].person=ghost;
 				ghost_x[1]=i;
 				ghost_y[1]=j;
 			}
 			else if (i == LARGEUR*3/4 && j == HAUTEUR/4)
 			{
+				grid[j][i].object=ball;
 				grid[j][i].person=ghost;
 				ghost_x[2]=i;
 				ghost_y[2]=j;
 			}
 			else if (i == LARGEUR/4 && j == HAUTEUR*3/4)
 			{
+				
 				grid[j][i].person=ghost;
 				ghost_x[3]=i;
 				ghost_y[3]=j;
@@ -96,6 +100,64 @@ int main()
 	int loop_game=1;
 	while(loop_game)
 	{
+		ch=getch();
+		//mouvements de Pac Man
+		//mouvement haut 
+		if(ch == KEY_UP)
+		{
+			if(grid[pos_y-1][pos_x].object != wallL && grid[pos_y-1][pos_x].object != wallH)
+			{
+				grid[pos_y][pos_x].person=no_one;
+				pos_y--;
+				grid[pos_y][pos_x].object = none;
+				grid[pos_y][pos_x].person=pac_man_up;
+			}
+			else
+				grid[pos_y][pos_x].person=pac_man_up;
+		}
+		//mouvement bas
+		else if(ch == KEY_DOWN)
+		{
+			if(grid[pos_y+1][pos_x].object != wallL && grid[pos_y+1][pos_x].object != wallH)
+			{
+				grid[pos_y][pos_x].person=no_one;
+				pos_y++;
+				grid[pos_y][pos_x].object = none;
+				grid[pos_y][pos_x].person=pac_man_down;
+			}
+			else
+				grid[pos_y][pos_x].person=pac_man_down;
+		}
+		//mouvement gauche
+		else if(ch == KEY_LEFT)
+		{
+			if(grid[pos_y][pos_x-1].object != wallL && grid[pos_y][pos_x-1].object != wallH)
+			{
+				grid[pos_y][pos_x].person=no_one;
+				pos_x--;
+				grid[pos_y][pos_x].object = none;
+				grid[pos_y][pos_x].person=pac_man_left;
+			}
+			else
+				grid[pos_y][pos_x].person=pac_man_left;
+		}
+		//mouvement droite
+		else if(ch == KEY_RIGHT)
+		{
+			if(grid[pos_y][pos_x+1].object != wallL && grid[pos_y][pos_x+1].object != wallH)
+			{
+				grid[pos_y][pos_x].person=no_one;
+				pos_x++;
+				grid[pos_y][pos_x].object = none;
+				grid[pos_y][pos_x].person=pac_man_right;
+			}
+			else
+				grid[pos_y][pos_x].person=pac_man_right;
+		}
+		//quitter le jeu
+		else if (ch == 'q')
+			loop_game = 0;
+		
 		//mouvements fantomes
 		for (int i = 0; i < 4; i++)
 		{
@@ -110,6 +172,7 @@ int main()
 						ghost_y[i]--;
 						grid[ghost_y[i]][ghost_x[i]].person=ghost;
 					}
+					
 					break;
 				case DOWN:
 					if(grid[ghost_y[i]+1][ghost_x[i]].object != wallL && grid[ghost_y[i]+1][ghost_x[i]].object != wallH)
@@ -138,84 +201,14 @@ int main()
 				default:
 					printf("ERROR, a ghost can't move in another direction!");
 			}
-		}
-		ch=getch();
-		//mouvements de Pac Man
-		//mouvement haut 
-		if(ch == KEY_UP)
-		{
-			if(grid[pos_y-1][pos_x].object != wallL && grid[pos_y-1][pos_x].object != wallH)
-			{
-				grid[pos_y][pos_x].person=no_one;
-				pos_y--;
-				grid[pos_y][pos_x].object = none;
-				grid[pos_y][pos_x].person=pac_man_up;
-			}
-			else if(grid[pos_y-1][pos_x].person == ghost)
+			if ( ghost_y[i] == pos_y && ghost_x[i]==pos_x)
 			{
 				printw("perdu! un fantôme vous a attrapé");
 				loop_game = 0;
 			}
-			else
-				grid[pos_y][pos_x].person=pac_man_up;
 		}
-		//mouvement bas
-		else if(ch == KEY_DOWN)
-		{
-			if(grid[pos_y+1][pos_x].object != wallL && grid[pos_y+1][pos_x].object != wallH)
-			{
-				grid[pos_y][pos_x].person=no_one;
-				pos_y++;
-				grid[pos_y][pos_x].object = none;
-				grid[pos_y][pos_x].person=pac_man_down;
-			}
-			else if(grid[pos_y+1][pos_x].person == ghost)
-			{
-				printw("perdu! un fantôme vous a attrapé");
-				loop_game = 0;
-			}
-			else
-				grid[pos_y][pos_x].person=pac_man_down;
-		}
-		//mouvement gauche
-		else if(ch == KEY_LEFT)
-		{
-			if(grid[pos_y][pos_x-1].object != wallL && grid[pos_y][pos_x-1].object != wallH)
-			{
-				grid[pos_y][pos_x].person=no_one;
-				pos_x--;
-				grid[pos_y][pos_x].object = none;
-				grid[pos_y][pos_x].person=pac_man_left;
-			}
-			else if(grid[pos_y][pos_x-1].person == ghost)
-			{
-				printw("perdu! un fantôme vous a attrapé");
-				loop_game = 0;
-			}
-			else
-				grid[pos_y][pos_x].person=pac_man_left;
-		}
-		//mouvement droite
-		else if(ch == KEY_RIGHT)
-		{
-			if(grid[pos_y][pos_x+1].object != wallL && grid[pos_y][pos_x+1].object != wallH)
-			{
-				grid[pos_y][pos_x].person=no_one;
-				pos_x++;
-				grid[pos_y][pos_x].object = none;
-				grid[pos_y][pos_x].person=pac_man_right;
-			}
-			else if(grid[pos_y][pos_x+1].person == ghost)
-			{
-				printw("perdu! un fantôme vous a attrapé");
-				loop_game = 0;
-			}
-			else
-				grid[pos_y][pos_x].person=pac_man_right;
-		}
-		//quitter le jeu
-		else if (ch == 'q')
-			loop_game = 0;
+		
+		
 		
 		//mise a jour interface
 		clear();

@@ -18,5 +18,7 @@ l'un chasse la plupart du temps Pac Man,
 un autre le chasse 3 cases en avant,
 un autre le chasse lorsqu'il approche, 
 et le dernier se ballade sans but. 
-->coder le dernier d'abord 
+->coder le dernier d'abord -- fait avec un aléatoire
+
+créer un algorithe de plus court chemin pour les fantomes
 
