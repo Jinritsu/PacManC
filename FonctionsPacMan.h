@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <ncurses.h>
 #ifndef FONCTIONSPACMAN_H
 #define FONCTIONSPACMAN_H
 

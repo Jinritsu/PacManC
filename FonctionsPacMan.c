@@ -13,36 +13,36 @@ void afficheSquare(Square *sqrt)
 	{
 		switch(sqrt->object)
 				{
-					case ball: printf("⋅");
+					case ball: printw("\u2022");
 						break;
-					case superball: printf("●");
+					case superball: printw("\u25cf");
 						break;
-					case cherry: printf("🍒");
+					case cherry: printw("🍒");
 						break;
-					case strawberry: printf("🍓");
+					case strawberry: printw("🍓");
 						break;
-					case wallH: printf("┃");
+					case wallH: printw("\u2503");
 						break;
-					case wallL: printf("━");
+					case wallL: printw("\u2501");
 						break;
-					default: printf(" ");
+					default: printw(" ");
 				}
 	}
 	else
 	{
 		switch(sqrt->person)
 		{
-			case pac_man_up: printf("ᗢ");
+			case pac_man_up: printw("ᗢ");
 				break;
-			case pac_man_down: printf("ᗣ");
+			case pac_man_down: printw("ᗣ");
 				break;
-			case pac_man_left: printf("ᗤ");
+			case pac_man_left: printw("ᗤ");
 				break;
-			case pac_man_right: printf("ᗧ");
+			case pac_man_right: printw("ᗧ");
 				break;
-			case ghost: printf("👻");
+			case ghost: printw("\u1649");
 				break;
-			default: printf(" ");
+			default: printw(" ");
 		}
 	}
 }

@@ -1,7 +1,29 @@
 Choses à ajouter dans le PAC-MAN:
-grille de jeu: taille fixe(pour un départ), optionnellement: variable.
-le PAC-MAN, joueur: mouvement avec les directions (haut, bas, gauche, droite).
+grille de jeu: taille fixe(pour un départ) --fait, optionnellement: variable.
+le PAC-MAN, joueur: mouvement avec les directions (haut, bas, gauche, droite). --fait
 les collectables: boules à récupérer. Vient les fruits appraissant aléatoirement.
 les ennemis: les fantômes 4 en toute, se balladant dans le niveau, à un intevalle régulier.
 si trou dans les murs -> passage de l'autre côté de la map.
+
+boucle de jeu: faire bouger Pac-Man dans les 4 sens:
+le changer de direction pour le sens demandé. --fait
+Si la case est un mur, Pac Man reste à sa position, sinon il se déplace dans la direction demandé --fait
+il consomme tous les objets sur les cases (sauf les murs) --fait
+S'il un fantôme lui arrive dessus, il meurt
+
+
+fantomes:
+4 comportement pour chaque fantôme:
+l'un chasse la plupart du temps Pac Man,
+un autre le chasse 3 cases en avant,
+un autre le chasse lorsqu'il approche, 
+et le dernier se ballade sans but. 
+->coder le dernier d'abord -- fait avec un aléatoire
+
+créer un algorithe de plus court chemin pour les fantomes
+
+Génération de niveau:
+Soit via des fichiers textes, permettant une modularité sur les niveau 
+et la possibilité de créer des niveaux supplémentaires.
+-> faire en sorte de prendre un argument supplémentaire lors du lancement de l'éxécutable
 
