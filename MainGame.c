@@ -2,46 +2,52 @@
 #include <stdlib.h>
 #include <locale.h>
 #include <ncurses.h>
+#include <curses.h>
 
 #include "FonctionsPacMan.h"
 
-#define UP 0
-#define DOWN 1 
-#define LEFT 2
-#define RIGHT 3
 
 
 int main(int argc, char* argv[])
 {
+	//taille de grille
 	const int HAUTEUR=30;
 	const int LARGEUR=50;
-	//initalisation
+	//initalisation de la fenetre
 	setlocale(LC_ALL, "");
 	initscr();
 	raw();
 	noecho();
 	cbreak();
+	start_color();
 	keypad(stdscr, TRUE);
 	nodelay(stdscr, TRUE);
 	timeout(1000);
 	
+	init_pair(1, COLOR_YELLOW,COLOR_BLACK);
 	//position de PAC MAN
 	int pos_x;
 	int pos_y;
 	
+	int power_state = 0;
+	
 	//positions des fantomes
 	int ghost_x[4];
 	int ghost_y[4];
-	
+	//état des fantomes(normal, affaibli,mangé)
+	int ghost_state[4]={0,0,0,0};
+	//déplacement des fantomes
 	int ghost_move;
+	
 	//grille de jeu
 	Square grid[HAUTEUR][LARGEUR];
-	
+	//Vérification des arguments de lancement
 	if (argc!=1)
 	{
 		char* filename = argv[1];
 		FILE* niveau=NULL;
 		niveau = fopen(filename,"r");
+		//Vérification que le pointeur ne mène pas à nulle part
 		if (niveau == NULL)
 		{
 			printf("ERROR: No file found, or file not correct\n");
@@ -67,6 +73,7 @@ int main(int argc, char* argv[])
 				switch(caractere_actuel)
 				{
 					//printf("%c", caractere_actuel);
+					//lecture du fichier et affectation des cases avec le fichier
 					case 'H':
 						grid[hauteur][largeur].object=wallH;
 						afficheSquare(&grid[hauteur][largeur]);
@@ -149,6 +156,7 @@ int main(int argc, char* argv[])
 				//initialisation des cases 
 				//(pour éviter qu'il y a tout et n'importe quoi)
 				initSquare(&grid[j][i]);
+				//affectation des objets et des personnages
 				if (i == LARGEUR/2 && j == HAUTEUR/2)
 				{
 					grid[j][i].object=none;
@@ -206,65 +214,35 @@ int main(int argc, char* argv[])
 		ch=getch();
 		//mouvements de Pac Man
 		//mouvement haut 
-		if(ch == KEY_UP)
+		switch(ch)
 		{
-			if(grid[pos_y-1][pos_x].object != wallL && grid[pos_y-1][pos_x].object != wallH)
-			{
-				grid[pos_y][pos_x].person=no_one;
-				pos_y--;
-				grid[pos_y][pos_x].object = none;
-				grid[pos_y][pos_x].person=pac_man_up;
-			}
-			else
-				grid[pos_y][pos_x].person=pac_man_up;
+			case KEY_UP:
+				movePacMan(&grid[pos_y][pos_x],&grid[pos_y-1][pos_x],&pos_x,&pos_y,UP,&power_state);
+				break;
+			//mouvement bas
+			case KEY_DOWN:
+				movePacMan(&grid[pos_y][pos_x],&grid[pos_y+1][pos_x],&pos_x,&pos_y,DOWN,&power_state);
+				break;
+			//mouvement gauche
+			case KEY_LEFT:
+				movePacMan(&grid[pos_y][pos_x],&grid[pos_y][pos_x-1],&pos_x,&pos_y,LEFT,&power_state);
+				break;
+			//mouvement droite
+			case KEY_RIGHT:
+				movePacMan(&grid[pos_y][pos_x],&grid[pos_y][pos_x+1],&pos_x,&pos_y,RIGHT,&power_state);
+				break;
+			//quitter le jeu
+			case 'q':
+				loop_game = 0;
+				break;
+			default:
+				ch=ERR;
 		}
-		//mouvement bas
-		else if(ch == KEY_DOWN)
-		{
-			if(grid[pos_y+1][pos_x].object != wallL && grid[pos_y+1][pos_x].object != wallH)
-			{
-				grid[pos_y][pos_x].person=no_one;
-				pos_y++;
-				grid[pos_y][pos_x].object = none;
-				grid[pos_y][pos_x].person=pac_man_down;
-			}
-			else
-				grid[pos_y][pos_x].person=pac_man_down;
-		}
-		//mouvement gauche
-		else if(ch == KEY_LEFT)
-		{
-			if(grid[pos_y][pos_x-1].object != wallL && grid[pos_y][pos_x-1].object != wallH)
-			{
-				grid[pos_y][pos_x].person=no_one;
-				pos_x--;
-				grid[pos_y][pos_x].object = none;
-				grid[pos_y][pos_x].person=pac_man_left;
-			}
-			else
-				grid[pos_y][pos_x].person=pac_man_left;
-		}
-		//mouvement droite
-		else if(ch == KEY_RIGHT)
-		{
-			if(grid[pos_y][pos_x+1].object != wallL && grid[pos_y][pos_x+1].object != wallH)
-			{
-				grid[pos_y][pos_x].person=no_one;
-				pos_x++;
-				grid[pos_y][pos_x].object = none;
-				grid[pos_y][pos_x].person=pac_man_right;
-			}
-			else
-				grid[pos_y][pos_x].person=pac_man_right;
-		}
-		//quitter le jeu
-		else if (ch == 'q')
-			loop_game = 0;
-		
 		//mouvements fantomes
 		for (int i = 0; i < 4; i++)
 		{
 			ghost_move=rand()%4;
+			
 			
 			switch(ghost_move)
 			{
@@ -304,11 +282,28 @@ int main(int argc, char* argv[])
 				default:
 					printf("ERROR, a ghost can't move in another direction!");
 			}
-			if ( ghost_y[i] == pos_y && ghost_x[i]==pos_x)
+			if ( ghost_y[i] == pos_y && ghost_x[i]==pos_x && power_state!=0)
 			{
-				printw("perdu! un fantôme vous a attrapé");
+				grid[ghost_y[i]][ghost_x[i]].person=no_one;
+				ghost_state[i]=10;
+				ghost_y[i]=HAUTEUR/2;
+				ghost_x[i]=LARGEUR/2;
+				grid[ghost_y[i]][ghost_x[i]].person=ghost;
+			}
+			else if ( ghost_y[i] == pos_y && ghost_x[i]==pos_x && ghost_state[i]==0)
+			{
+				printf("perdu! un fantôme vous a attrapé\n");
 				loop_game = 0;
 			}
+			if (ghost_state[i]!=0)
+			{
+				ghost_state[i]--;
+			}
+			
+		}
+		if (power_state!=0)
+		{
+			power_state--;
 		}
 		
 		
@@ -320,12 +315,20 @@ int main(int argc, char* argv[])
 		{
 			for(int i=0; i<LARGEUR;i++)
 			{
+				if (grid[j][i].person == ghost)
+					attron(COLOR_PAIR(1));
+					
+					
 				afficheSquare(&grid[j][i]);
+				
+				if (grid[j][i].person == ghost)
+					attroff(COLOR_PAIR(1));
 			}
 			printw("\n");
 		}
 		refresh();
 	}
+	attroff(COLOR_PAIR(1));
 	ch = getch();
 	endwin();
 	return 0;

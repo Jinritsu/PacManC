@@ -10,6 +10,10 @@ typedef enum Object
 typedef enum Person
 {no_one,pac_man_down,pac_man_up,pac_man_left,pac_man_right,ghost}Person;
 
+typedef enum Direction
+{UP,DOWN,RIGHT,LEFT}Direction;
+
+
 typedef struct Square
 {
 	Object object;
@@ -18,5 +22,6 @@ typedef struct Square
 
 void initSquare(Square *sqrt);
 void afficheSquare(Square *sqrt);
+void movePacMan(Square* grid_old,Square* grid_new,int* pos_x,int* pos_y,int move,int* power_state);
 
 #endif

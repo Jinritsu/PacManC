@@ -1,5 +1,5 @@
 #include "FonctionsPacMan.h"
-
+#define POWER_STATE 60
 
 void initSquare(Square *sqrt)
 {
@@ -45,5 +45,60 @@ void afficheSquare(Square *sqrt)
 			default: printw(" ");
 		}
 	}
+}
+
+void movePacMan(Square* grid_old,Square* grid_new,int* pos_x,int* pos_y,int move,int* power_state)
+{
+	if(grid_new->object == superball)
+		*power_state = POWER_STATE;
+	switch(move){
+		case UP:
+			if(grid_new->object != wallL && grid_new->object != wallH)
+					{
+						grid_old->person=no_one;
+						*pos_y= *pos_y-1;
+						grid_new->object = none;
+						grid_new->person=pac_man_up;
+					}
+					else
+						grid_old->person=pac_man_up;
+			break;
+		case DOWN:
+			if(grid_new->object != wallL && grid_new->object != wallH)
+			{
+				grid_old->person=no_one;
+				*pos_y= *pos_y+1;
+				grid_new->object = none;
+				grid_new->person=pac_man_down;
+			}
+			else
+				grid_old->person=pac_man_down;
+			break;
+		case LEFT:
+			if(grid_new->object != wallL && grid_new->object != wallH)
+			{
+				grid_old->person=no_one;
+				*pos_x= *pos_x-1;
+				grid_new->object = none;
+				grid_new->person=pac_man_left;
+			}
+			else
+				grid_old->person=pac_man_left;
+			break;
+		case RIGHT:
+			if(grid_new->object != wallL && grid_new->object != wallH)
+			{
+				grid_old->person=no_one;
+				*pos_x= *pos_x+1;
+				grid_new->object = none;
+				grid_new->person=pac_man_right;
+			}
+			else
+				grid_old->person=pac_man_right;
+			break;
+		default:
+			*pos_x=*pos_x;
+			*pos_y=*pos_y;
+		}
 }
 
