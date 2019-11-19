@@ -22,7 +22,8 @@ int main(int argc, char* argv[])
 	noecho();
 	cbreak();
 	keypad(stdscr, TRUE);
-	//nodelay(stdscr, TRUE);
+	nodelay(stdscr, TRUE);
+	timeout(1000);
 	
 	//position de PAC MAN
 	int pos_x;
