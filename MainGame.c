@@ -11,11 +11,10 @@
 #define RIGHT 3
 
 
-#define HAUTEUR 30
-#define LARGEUR 50
-
-int main()
+int main(int argc, char* argv[])
 {
+	const int HAUTEUR=30;
+	const int LARGEUR=50;
 	//initalisation
 	setlocale(LC_ALL, "");
 	initscr();
@@ -23,6 +22,7 @@ int main()
 	noecho();
 	cbreak();
 	keypad(stdscr, TRUE);
+	//nodelay(stdscr, TRUE);
 	
 	//position de PAC MAN
 	int pos_x;
@@ -35,67 +35,169 @@ int main()
 	int ghost_move;
 	//grille de jeu
 	Square grid[HAUTEUR][LARGEUR];
-	//charactere d'entrée du clavier
-	int ch;
 	
-	//initialisation de l'interface
-	printw("\n");
-	//boucle sur les colonnes
-	for(int j=0; j<HAUTEUR;j++)
+	if (argc!=1)
 	{
-		//boucle sur les lignes
-		for(int i=0; i<LARGEUR;i++)
+		char* filename = argv[1];
+		FILE* niveau=NULL;
+		niveau = fopen(filename,"r");
+		if (niveau == NULL)
 		{
-			//initialisation des cases 
-			//(pour éviter qu'il y a tout et n'importe quoi)
-			initSquare(&grid[j][i]);
-			if (i == LARGEUR/2 && j == HAUTEUR/2)
-			{
-				grid[j][i].object=none;
-				grid[j][i].person=pac_man_left;
-				pos_x=i;
-				pos_y=j;
-			}
-			else if (i == LARGEUR/4 && j == HAUTEUR/4)
-			{
-				grid[j][i].object=ball;
-				grid[j][i].person=ghost;
-				ghost_x[0]=i;
-				ghost_y[0]=j;
-			}
-			else if (i == LARGEUR*3/4 && j == HAUTEUR*3/4)
-			{
-				grid[j][i].object=ball;
-				grid[j][i].person=ghost;
-				ghost_x[1]=i;
-				ghost_y[1]=j;
-			}
-			else if (i == LARGEUR*3/4 && j == HAUTEUR/4)
-			{
-				grid[j][i].object=ball;
-				grid[j][i].person=ghost;
-				ghost_x[2]=i;
-				ghost_y[2]=j;
-			}
-			else if (i == LARGEUR/4 && j == HAUTEUR*3/4)
-			{
-				
-				grid[j][i].person=ghost;
-				ghost_x[3]=i;
-				ghost_y[3]=j;
-			}
-			else if (i == 0 || i == LARGEUR-1)
-				grid[j][i].object=wallH;
-			else if (j == 0 || j == HAUTEUR-1)
-				grid[j][i].object=wallL;
-			else
-				grid[j][i].object=ball;
-				
-				
-			afficheSquare(&grid[j][i]);
+			printf("ERROR: No file found, or file not correct\n");
+			printf("ending...\n");
+			endwin();
+			exit(0);
+			
+			
+			
 		}
-		printw("\n");
+		else
+		{
+			int largeur=0;
+			int hauteur=0;
+			int caractere_actuel=0;
+			int ind_ghost=0;
+			printw("\n");
+			//grille de jeu
+			do
+			{
+				initSquare(&grid[hauteur][largeur]);
+				caractere_actuel = fgetc(niveau); // On lit le caractère
+				switch(caractere_actuel)
+				{
+					//printf("%c", caractere_actuel);
+					case 'H':
+						grid[hauteur][largeur].object=wallH;
+						afficheSquare(&grid[hauteur][largeur]);
+						largeur++;
+						break;
+					case 'L':
+						grid[hauteur][largeur].object=wallL;
+						afficheSquare(&grid[hauteur][largeur]);
+						largeur++;
+						break;
+					case 'b':
+						grid[hauteur][largeur].object=ball;
+						afficheSquare(&grid[hauteur][largeur]);
+						largeur++;
+						break;
+					case 'B':
+						grid[hauteur][largeur].object=superball;
+						afficheSquare(&grid[hauteur][largeur]);
+						largeur++;
+						break;
+					case 'G':
+						grid[hauteur][largeur].object=ball;
+						grid[hauteur][largeur].person=ghost;
+						ghost_x[ind_ghost]=largeur;
+						ghost_y[ind_ghost]=hauteur;
+						afficheSquare(&grid[hauteur][largeur]);
+						ind_ghost++;
+						largeur++;
+						
+						break;
+					case 'P':
+						grid[hauteur][largeur].object=none;
+						grid[hauteur][largeur].person=pac_man_left;
+						afficheSquare(&grid[hauteur][largeur]);
+						pos_x=largeur;
+						pos_y=hauteur;
+						largeur++;
+						
+						break;
+					case 'C':
+						grid[hauteur][largeur].object=cherry;
+						afficheSquare(&grid[hauteur][largeur]);
+						largeur++;
+						break;
+					case 'S':
+						grid[hauteur][largeur].object=strawberry;
+						afficheSquare(&grid[hauteur][largeur]);
+						largeur++;
+						break;
+					case '\n':
+						largeur = 0;
+						hauteur++;
+						printw("\n");
+						break;
+					case EOF:
+						printf("finished.Creating level...\n");
+						break;
+					default:
+						printf("ERROR: character not handled\n");
+						endwin();
+						exit(0);
+				}
+				
+			}while (caractere_actuel != EOF); // On continue tant que fgetc n'a pas retourné EOF (fin de fichier)
+			printw("\n");
+			fclose(niveau);
+		}
 	}
+	else
+	{
+		
+		//initialisation de l'interface
+		printw("\n");
+		//boucle sur les colonnes
+		for(int j=0; j<HAUTEUR;j++)
+		{
+			//boucle sur les lignes
+			for(int i=0; i<LARGEUR;i++)
+			{
+				//initialisation des cases 
+				//(pour éviter qu'il y a tout et n'importe quoi)
+				initSquare(&grid[j][i]);
+				if (i == LARGEUR/2 && j == HAUTEUR/2)
+				{
+					grid[j][i].object=none;
+					grid[j][i].person=pac_man_left;
+					pos_x=i;
+					pos_y=j;
+				}
+				else if (i == LARGEUR/4 && j == HAUTEUR/4)
+				{
+					grid[j][i].object=ball;
+					grid[j][i].person=ghost;
+					ghost_x[0]=i;
+					ghost_y[0]=j;
+				}
+				else if (i == LARGEUR*3/4 && j == HAUTEUR*3/4)
+				{
+					grid[j][i].object=ball;
+					grid[j][i].person=ghost;
+					ghost_x[1]=i;
+					ghost_y[1]=j;
+				}
+				else if (i == LARGEUR*3/4 && j == HAUTEUR/4)
+				{
+					grid[j][i].object=ball;
+					grid[j][i].person=ghost;
+					ghost_x[2]=i;
+					ghost_y[2]=j;
+				}
+				else if (i == LARGEUR/4 && j == HAUTEUR*3/4)
+				{
+					
+					grid[j][i].person=ghost;
+					ghost_x[3]=i;
+					ghost_y[3]=j;
+				}
+				else if (i == 0 || i == LARGEUR-1)
+					grid[j][i].object=wallH;
+				else if (j == 0 || j == HAUTEUR-1)
+					grid[j][i].object=wallL;
+				else
+					grid[j][i].object=ball;
+					
+					
+				afficheSquare(&grid[j][i]);
+			}
+		printw("\n");
+		}
+	}
+	//carcatere d'entrée du clavier
+	int ch;
 	//boucle de jeu
 	int loop_game=1;
 	while(loop_game)

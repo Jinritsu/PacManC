@@ -22,3 +22,8 @@ et le dernier se ballade sans but.
 
 créer un algorithe de plus court chemin pour les fantomes
 
+Génération de niveau:
+Soit via des fichiers textes, permettant une modularité sur les niveau 
+et la possibilité de créer des niveaux supplémentaires.
+-> faire en sorte de prendre un argument supplémentaire lors du lancement de l'éxécutable
+
