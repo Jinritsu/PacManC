@@ -7,6 +7,16 @@ void initSquare(Square *sqrt)
 	sqrt->person = no_one;
 }
 
+void initGhost(Ghost *a_ghost)
+{
+	a_ghost->x=0;
+	a_ghost->y=0;
+	a_ghost->state=0;
+	a_ghost->snail=0;
+	a_ghost->color=RED;
+}
+
+
 void afficheSquare(Square *sqrt)
 {
 	if (sqrt->person == no_one)
@@ -46,6 +56,7 @@ void afficheSquare(Square *sqrt)
 		}
 	}
 }
+
 
 void movePacMan(Square* grid_old,Square* grid_new,int* pos_x,int* pos_y,int move,int* power_state)
 {
@@ -100,5 +111,51 @@ void movePacMan(Square* grid_old,Square* grid_new,int* pos_x,int* pos_y,int move
 			*pos_x=*pos_x;
 			*pos_y=*pos_y;
 		}
+}
+void moveGhost(Square* grid_old,Square* grid_new,int* pos_x,int* pos_y,Ghost* a_ghost,int* power_state, int* loop_game,int ghost_move)
+{
+	
+	//direction où se bougent les fantômes
+	switch(ghost_move)
+	{
+		case UP:
+			if(grid_new->object != wallL && grid_new->object != wallH)
+			{
+				grid_old->person=no_one;
+				a_ghost->y--;
+				grid_new->person=ghost;
+			}
+			
+			break;
+		case DOWN:
+			if(grid_new->object != wallL && grid_new->object != wallH)
+			{
+				grid_old->person=no_one;
+				a_ghost->y++;
+				grid_new->person=ghost;
+			}
+			break;
+		case LEFT:
+			if(grid_new->object != wallL && grid_new->object != wallH)
+			{
+				grid_old->person=no_one;
+				a_ghost->x--;
+				grid_new->person=ghost;
+			}
+			break;
+		case RIGHT:
+			if(grid_new->object != wallL && grid_new->object != wallH)
+			{
+				grid_old->person=no_one;
+				a_ghost->x++;
+				grid_new->person=ghost;
+			}
+			break;
+		case NO_MOVE:
+			a_ghost->x = a_ghost->x;
+			a_ghost->y = a_ghost->y;
+		default:
+		printf("ERROR: a ghost can't move in this direction!\n");
+	}
 }
 

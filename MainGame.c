@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h>
+#include <math.h>
 #include <ncurses.h>
 #include <curses.h>
 
@@ -31,14 +32,12 @@ int main(int argc, char* argv[])
 	
 	int power_state = 0;
 	
-	//positions des fantomes
-	int ghost_x[4];
-	int ghost_y[4];
-	//état des fantomes(normal, affaibli,mangé)
-	int ghost_state[4]={0,0,0,0};
+	//fantomes
+	Ghost ghosts[4];
+	for (int i=0;i<4;i++)
+		initGhost(&ghosts[i]);
 	//déplacement des fantomes
 	int ghost_move;
-	
 	//grille de jeu
 	Square grid[HAUTEUR][LARGEUR];
 	//Vérification des arguments de lancement
@@ -97,8 +96,8 @@ int main(int argc, char* argv[])
 					case 'G':
 						grid[hauteur][largeur].object=ball;
 						grid[hauteur][largeur].person=ghost;
-						ghost_x[ind_ghost]=largeur;
-						ghost_y[ind_ghost]=hauteur;
+						ghosts[ind_ghost].x=largeur;
+						ghosts[ind_ghost].y=hauteur;
 						afficheSquare(&grid[hauteur][largeur]);
 						ind_ghost++;
 						largeur++;
@@ -168,29 +167,29 @@ int main(int argc, char* argv[])
 				{
 					grid[j][i].object=ball;
 					grid[j][i].person=ghost;
-					ghost_x[0]=i;
-					ghost_y[0]=j;
+					ghosts[0].x=i;
+					ghosts[0].y=j;
 				}
 				else if (i == LARGEUR*3/4 && j == HAUTEUR*3/4)
 				{
 					grid[j][i].object=ball;
 					grid[j][i].person=ghost;
-					ghost_x[1]=i;
-					ghost_y[1]=j;
+					ghosts[1].x=i;
+					ghosts[1].y=j;
 				}
 				else if (i == LARGEUR*3/4 && j == HAUTEUR/4)
 				{
 					grid[j][i].object=ball;
 					grid[j][i].person=ghost;
-					ghost_x[2]=i;
-					ghost_y[2]=j;
+					ghosts[2].x=i;
+					ghosts[2].y=j;
 				}
 				else if (i == LARGEUR/4 && j == HAUTEUR*3/4)
 				{
-					
+					grid[j][i].object=ball;
 					grid[j][i].person=ghost;
-					ghost_x[3]=i;
-					ghost_y[3]=j;
+					ghosts[3].x=i;
+					ghosts[3].y=j;
 				}
 				else if (i == 0 || i == LARGEUR-1)
 					grid[j][i].object=wallH;
@@ -241,63 +240,76 @@ int main(int argc, char* argv[])
 		//mouvements fantomes
 		for (int i = 0; i < 4; i++)
 		{
-			ghost_move=rand()%4;
+			//fuite dans fantomes lors du power_state
+			if (power_state != 0)
+			{
+				//fantome qui c'est fait manger
+				if (ghosts[i].state !=0)
+					ghost_move=NO_MOVE;
+				else
+				{
+					//1 coup sur 2, le fantôme n'avance pas lors du power state
+					if (ghosts[i].snail == 0 )
+					{
+						//le fantôme fuit dans la direction opposé à Pac Man
+						if(abs(ghosts[i].x-pos_x) > abs(ghosts[i].y-pos_y))
+						{
+							if((ghosts[i].x-pos_x)<0)
+								ghost_move=LEFT;
+							else
+								ghost_move=RIGHT;
+						}
+						else
+						{
+							if((ghosts[i].y-pos_y)<0)
+								ghost_move=UP;
+							else
+								ghost_move=DOWN;
+						}
+						ghosts[i].snail=1;
+					}
+					else
+					{
+						ghost_move=NO_MOVE;
+						ghosts[i].snail=0;
+					}	
+				}
+			}
+			else
+				ghost_move=rand()%4;
 			
-			
+			//direction où se bougent les fantômes
 			switch(ghost_move)
 			{
 				case UP:
-					if(grid[ghost_y[i]-1][ghost_x[i]].object != wallL && grid[ghost_y[i]-1][ghost_x[i]].object != wallH)
-					{
-						grid[ghost_y[i]][ghost_x[i]].person=no_one;
-						ghost_y[i]--;
-						grid[ghost_y[i]][ghost_x[i]].person=ghost;
-					}
-					
+					moveGhost(&grid[ghosts[i].y][ghosts[i].x],&grid[ghosts[i].y-1][ghosts[i].x],&pos_x,&pos_y,&ghosts[i],&power_state, &loop_game,ghost_move);
 					break;
 				case DOWN:
-					if(grid[ghost_y[i]+1][ghost_x[i]].object != wallL && grid[ghost_y[i]+1][ghost_x[i]].object != wallH)
-					{
-						grid[ghost_y[i]][ghost_x[i]].person=no_one;
-						ghost_y[i]++;
-						grid[ghost_y[i]][ghost_x[i]].person=ghost;
-					}
+					moveGhost(&grid[ghosts[i].y][ghosts[i].x],&grid[ghosts[i].y+1][ghosts[i].x],&pos_x,&pos_y,&ghosts[i],&power_state, &loop_game,ghost_move);
 					break;
 				case LEFT:
-					if(grid[ghost_y[i]][ghost_x[i]-1].object != wallL && grid[ghost_y[i]][ghost_x[i]-1].object != wallH)
-					{
-						grid[ghost_y[i]][ghost_x[i]].person=no_one;
-						ghost_x[i]--;
-						grid[ghost_y[i]][ghost_x[i]].person=ghost;
-					}
+					moveGhost(&grid[ghosts[i].y][ghosts[i].x],&grid[ghosts[i].y][ghosts[i].x-1],&pos_x,&pos_y,&ghosts[i],&power_state, &loop_game,ghost_move);
 					break;
 				case RIGHT:
-					if(grid[ghost_y[i]][ghost_x[i]+1].object != wallL && grid[ghost_y[i]][ghost_x[i]+1].object != wallH)
-					{
-						grid[ghost_y[i]][ghost_x[i]].person=no_one;
-						ghost_x[i]++;
-						grid[ghost_y[i]][ghost_x[i]].person=ghost;
-					}
+					moveGhost(&grid[ghosts[i].y][ghosts[i].x],&grid[ghosts[i].y][ghosts[i].x+1],&pos_x,&pos_y,&ghosts[i],&power_state, &loop_game,ghost_move);
 					break;
+				case NO_MOVE:
+					moveGhost(&grid[ghosts[i].y][ghosts[i].x],&grid[ghosts[i].y][ghosts[i].x],&pos_x,&pos_y,&ghosts[i],&power_state, &loop_game,ghost_move);
 				default:
-					printf("ERROR, a ghost can't move in another direction!");
+				printf("ERROR: a ghost can't move in this direction!\n");
 			}
-			if ( ghost_y[i] == pos_y && ghost_x[i]==pos_x && power_state!=0)
+			if ( ghosts[i].y == pos_y && ghosts[i].x==pos_x && power_state!=0)
 			{
-				grid[ghost_y[i]][ghost_x[i]].person=no_one;
-				ghost_state[i]=10;
-				ghost_y[i]=HAUTEUR/2;
-				ghost_x[i]=LARGEUR/2;
-				grid[ghost_y[i]][ghost_x[i]].person=ghost;
+				moveGhost(&grid[ghosts[i].y][ghosts[i].x],&grid[HAUTEUR/2][LARGEUR/2],&pos_x,&pos_y,&ghosts[i],&power_state, &loop_game,ghost_move);
 			}
-			else if ( ghost_y[i] == pos_y && ghost_x[i]==pos_x && ghost_state[i]==0)
+			else if ( ghosts[i].y == pos_y && ghosts[i].x==pos_x && ghosts[i].state==0)
 			{
-				printf("perdu! un fantôme vous a attrapé\n");
+				printw("perdu! un fantôme vous a attrapé\n");
 				loop_game = 0;
 			}
-			if (ghost_state[i]!=0)
+			if (ghosts[i].state!=0)
 			{
-				ghost_state[i]--;
+				ghosts[i].state--;
 			}
 			
 		}
@@ -328,7 +340,6 @@ int main(int argc, char* argv[])
 		}
 		refresh();
 	}
-	attroff(COLOR_PAIR(1));
 	ch = getch();
 	endwin();
 	return 0;
