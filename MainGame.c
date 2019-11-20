@@ -354,6 +354,7 @@ int main(int argc, char* argv[])
 		{
 			for(int i=0; i<LARGEUR;i++)
 			{
+				//couleur des fantomes
 				if (grid[j][i].person == ghost)
 				{
 					
@@ -387,6 +388,7 @@ int main(int argc, char* argv[])
 				}	
 				afficheSquare(&grid[j][i]);
 				
+				//enlever la couleur des fantomes
 				if (grid[j][i].person == ghost)
 				{
 					if(power_state==0)
