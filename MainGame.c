@@ -25,7 +25,6 @@ int main(int argc, char* argv[])
 	nodelay(stdscr, TRUE);
 	timeout(1000);
 	
-	init_pair(1, COLOR_YELLOW,COLOR_BLACK);
 	//position de PAC MAN
 	int pos_x;
 	int pos_y;
@@ -35,7 +34,32 @@ int main(int argc, char* argv[])
 	//fantomes
 	Ghost ghosts[4];
 	for (int i=0;i<4;i++)
+	{
 		initGhost(&ghosts[i]);
+		switch(i)
+		{
+			case 0:
+				ghosts[i].color=RED;
+				init_pair(1, COLOR_RED,COLOR_BLACK);
+				break;
+			case 1:
+				ghosts[i].color=ROSE;
+				init_pair(2, COLOR_MAGENTA,COLOR_BLACK);
+				break;
+			case 2:
+				ghosts[i].color=CYAN;
+				init_pair(3, COLOR_CYAN,COLOR_BLACK);
+				break;
+			case 3:
+				ghosts[i].color=ORANGE;
+				init_pair(4, COLOR_YELLOW,COLOR_BLACK);
+				break;
+			default:
+				printf("What color?\n");
+		}
+	}
+	init_pair(5, COLOR_BLUE,COLOR_BLACK);
+	Coloration a_color=CYAN;
 	//déplacement des fantomes
 	int ghost_move;
 	//grille de jeu
@@ -301,6 +325,9 @@ int main(int argc, char* argv[])
 			if ( ghosts[i].y == pos_y && ghosts[i].x==pos_x && power_state!=0)
 			{
 				moveGhost(&grid[ghosts[i].y][ghosts[i].x],&grid[HAUTEUR/2][LARGEUR/2],&pos_x,&pos_y,&ghosts[i],&power_state, &loop_game,ghost_move);
+				ghosts[i].x=LARGEUR/2;
+				ghosts[i].y=HAUTEUR/2;
+				ghosts[i].state=10;
 			}
 			else if ( ghosts[i].y == pos_y && ghosts[i].x==pos_x && ghosts[i].state==0)
 			{
@@ -328,13 +355,63 @@ int main(int argc, char* argv[])
 			for(int i=0; i<LARGEUR;i++)
 			{
 				if (grid[j][i].person == ghost)
-					attron(COLOR_PAIR(1));
+				{
 					
-					
+					if(power_state==0)
+					{
+						for (int k=0;k<4;k++)
+						{
+							if (ghosts[k].x==i && ghosts[k].y==j)
+								a_color=ghosts[k].color;
+						}
+						switch(a_color)
+						{
+							case RED:
+								attron(COLOR_PAIR(1));
+								break;
+							case ROSE:
+								attron(COLOR_PAIR(2));
+								break;
+							case CYAN:
+								attron(COLOR_PAIR(3));
+								break;
+							case ORANGE:
+								attron(COLOR_PAIR(4));
+								break;
+							default:
+								printf("What color?\n");
+						}
+					}
+					else
+						attron(COLOR_PAIR(5));
+				}	
 				afficheSquare(&grid[j][i]);
 				
 				if (grid[j][i].person == ghost)
-					attroff(COLOR_PAIR(1));
+				{
+					if(power_state==0)
+					{
+						switch(a_color)
+						{
+							case RED:
+								attroff(COLOR_PAIR(1));
+								break;
+							case ROSE:
+								attroff(COLOR_PAIR(2));
+								break;
+							case CYAN:
+								attroff(COLOR_PAIR(3));
+								break;
+							case ORANGE:
+								attroff(COLOR_PAIR(4));
+								break;
+							default:
+								printf("What color?\n");
+						}
+					}
+					else
+						attroff(COLOR_PAIR(5));
+				}		
 			}
 			printw("\n");
 		}

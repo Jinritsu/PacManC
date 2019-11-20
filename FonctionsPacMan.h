@@ -14,7 +14,7 @@ typedef enum Direction
 {UP,DOWN,RIGHT,LEFT,NO_MOVE}Direction;
 
 typedef enum Coloration
-{RED,CYAN,ROSE,ORANGE}Coloration;
+{RED,ROSE,CYAN,ORANGE}Coloration;
 
 typedef struct Ghost
 {
