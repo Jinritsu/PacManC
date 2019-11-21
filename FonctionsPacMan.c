@@ -14,6 +14,7 @@ void initGhost(Ghost *a_ghost)
 	a_ghost->state=0;
 	a_ghost->snail=0;
 	a_ghost->color=RED;
+	a_ghost->chase=0;
 }
 
 
@@ -159,3 +160,75 @@ void moveGhost(Square* grid_old,Square* grid_new,int* pos_x,int* pos_y,Ghost* a_
 	}
 }
 
+void ghostMoveChoice(Ghost* a_ghost,int* power_state,int* ghost_move,int* pos_x,int* pos_y)
+{
+	//fuite dans fantomes lors du power_state
+			if (*power_state != 0)
+			{
+				//fantome qui c'est fait manger
+				if (a_ghost->state !=0)
+					*ghost_move=NO_MOVE;
+				else
+				{
+					//1 coup sur 2, le fantôme n'avance pas lors du power state
+					if (a_ghost->snail == 0 )
+					{
+						//le fantôme fuit dans la direction opposé à Pac Man
+						if(abs(a_ghost->x-*pos_x) > abs(a_ghost->y-*pos_y))
+						{
+							if((a_ghost->x-*pos_x)<0)
+								*ghost_move=LEFT;
+							else
+								*ghost_move=RIGHT;
+						}
+						else
+						{
+							if((a_ghost->y-*pos_y)<0)
+								*ghost_move=UP;
+							else
+								*ghost_move=DOWN;
+						}
+						a_ghost->snail=1;
+					}
+					else
+					{
+						*ghost_move=NO_MOVE;
+						a_ghost->snail=0;
+					}	
+				}
+			}
+			else
+			{
+				//mouvement des différents fantômes
+				switch(a_ghost->color)
+				{
+					case ORANGE:
+						*ghost_move=rand()%4;
+						break;
+					case ROSE:
+						*ghost_move=rand()%4;
+						break;
+					case RED:
+						if(abs(a_ghost->x-*pos_x) > abs(a_ghost->y-*pos_y))
+						{
+							if((a_ghost->x-*pos_x)<0)
+								*ghost_move=RIGHT;
+							else
+								*ghost_move=LEFT;
+						}
+						else
+						{
+							if((a_ghost->y-*pos_y)<0)
+								*ghost_move=DOWN;
+							else
+								*ghost_move=UP;
+						}
+						break;
+					case CYAN:
+						*ghost_move=rand()%4;
+						break;
+					default:
+						printw("what color?\n");
+				}
+			}
+}

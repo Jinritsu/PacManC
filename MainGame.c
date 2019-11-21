@@ -264,44 +264,7 @@ int main(int argc, char* argv[])
 		//mouvements fantomes
 		for (int i = 0; i < 4; i++)
 		{
-			//fuite dans fantomes lors du power_state
-			if (power_state != 0)
-			{
-				//fantome qui c'est fait manger
-				if (ghosts[i].state !=0)
-					ghost_move=NO_MOVE;
-				else
-				{
-					//1 coup sur 2, le fantôme n'avance pas lors du power state
-					if (ghosts[i].snail == 0 )
-					{
-						//le fantôme fuit dans la direction opposé à Pac Man
-						if(abs(ghosts[i].x-pos_x) > abs(ghosts[i].y-pos_y))
-						{
-							if((ghosts[i].x-pos_x)<0)
-								ghost_move=LEFT;
-							else
-								ghost_move=RIGHT;
-						}
-						else
-						{
-							if((ghosts[i].y-pos_y)<0)
-								ghost_move=UP;
-							else
-								ghost_move=DOWN;
-						}
-						ghosts[i].snail=1;
-					}
-					else
-					{
-						ghost_move=NO_MOVE;
-						ghosts[i].snail=0;
-					}	
-				}
-			}
-			else
-				ghost_move=rand()%4;
-			
+			ghostMoveChoice(&ghosts[i],&power_state,&ghost_move,&pos_x,&pos_y);
 			//direction où se bougent les fantômes
 			switch(ghost_move)
 			{
