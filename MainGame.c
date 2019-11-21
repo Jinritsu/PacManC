@@ -60,6 +60,8 @@ int main(int argc, char* argv[])
 	}
 	init_pair(5, COLOR_BLUE,COLOR_BLACK);
 	Coloration a_color=CYAN;
+	int tour=0;
+	
 	//déplacement des fantomes
 	int ghost_move;
 	//grille de jeu
@@ -264,7 +266,7 @@ int main(int argc, char* argv[])
 		//mouvements fantomes
 		for (int i = 0; i < 4; i++)
 		{
-			ghostMoveChoice(&ghosts[i],&power_state,&ghost_move,&pos_x,&pos_y);
+			ghostMoveChoice(&ghosts[i],&power_state,&ghost_move,&pos_x,&pos_y,&tour,&grid[pos_y][pos_x]);
 			//direction où se bougent les fantômes
 			switch(ghost_move)
 			{
@@ -380,6 +382,9 @@ int main(int argc, char* argv[])
 			}
 			printw("\n");
 		}
+		tour++;
+		if (tour > 3600)
+			tour=0;
 		refresh();
 	}
 	ch = getch();

@@ -37,6 +37,6 @@ void initGhost(Ghost *a_ghost);
 void afficheSquare(Square *sqrt);
 void movePacMan(Square* grid_old,Square* grid_new,int* pos_x,int* pos_y,int move,int* power_state);
 void moveGhost(Square* grid_old,Square* grid_new,int* pos_x,int* pos_y,Ghost* a_ghost,int* power_state, int* loop_game,int ghost_move);
-void ghostMoveChoice(Ghost* a_ghost,int* power_state,int* ghost_move,int* pos_x,int* pos_y);
+void ghostMoveChoice(Ghost* a_ghost,int* power_state,int* ghost_move,int* pos_x,int* pos_y,int* tour,Square* pac_man);
 
 #endif

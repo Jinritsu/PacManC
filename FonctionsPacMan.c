@@ -24,9 +24,9 @@ void afficheSquare(Square *sqrt)
 	{
 		switch(sqrt->object)
 				{
-					case ball: printw("\u2022");
+					case ball: printw("\u00b7");
 						break;
-					case superball: printw("\u25cf");
+					case superball: printw("\u2022");
 						break;
 					case cherry: printw("🍒");
 						break;
@@ -160,8 +160,10 @@ void moveGhost(Square* grid_old,Square* grid_new,int* pos_x,int* pos_y,Ghost* a_
 	}
 }
 
-void ghostMoveChoice(Ghost* a_ghost,int* power_state,int* ghost_move,int* pos_x,int* pos_y)
+void ghostMoveChoice(Ghost* a_ghost,int* power_state,int* ghost_move,int* pos_x,int* pos_y,int* tour, Square* pac_man)
 {
+	int pos_x_guess=*pos_x;
+	int pos_y_guess=*pos_y;
 	//fuite dans fantomes lors du power_state
 			if (*power_state != 0)
 			{
@@ -199,36 +201,106 @@ void ghostMoveChoice(Ghost* a_ghost,int* power_state,int* ghost_move,int* pos_x,
 			}
 			else
 			{
-				//mouvement des différents fantômes
-				switch(a_ghost->color)
+				if(a_ghost->chase != 0)
 				{
-					case ORANGE:
-						*ghost_move=rand()%4;
-						break;
-					case ROSE:
-						*ghost_move=rand()%4;
-						break;
-					case RED:
-						if(abs(a_ghost->x-*pos_x) > abs(a_ghost->y-*pos_y))
-						{
-							if((a_ghost->x-*pos_x)<0)
-								*ghost_move=RIGHT;
+					//mouvement des différents fantômes
+					switch(a_ghost->color)
+					{
+						case ORANGE:
+							*ghost_move=rand()%4;
+							break;
+						case ROSE:
+								switch (pac_man->person)
+								{
+									case pac_man_down:
+										pos_y_guess=pos_y_guess+2;
+										break;
+									case pac_man_up:
+										pos_y_guess=pos_y_guess-2;
+										break;
+									case pac_man_left:
+										pos_x_guess=pos_x_guess-2;
+										break;
+									case pac_man_right:
+										pos_x_guess=pos_x_guess+2;
+										break;
+									default:
+										pos_x_guess=pos_x_guess+2;
+								}
+								if(abs(a_ghost->x-pos_x_guess) > abs(a_ghost->y-pos_y_guess))
+								{
+									if((a_ghost->x-pos_x_guess)<0)
+										*ghost_move=RIGHT;
+									else
+										*ghost_move=LEFT;
+								}
+								else
+								{
+									if((a_ghost->y-pos_y_guess)<0)
+										*ghost_move=DOWN;
+									else
+										*ghost_move=UP;
+								}
+							break;
+						case RED:
+							if(abs(a_ghost->x-*pos_x) > abs(a_ghost->y-*pos_y))
+							{
+								if((a_ghost->x-*pos_x)<0)
+									*ghost_move=RIGHT;
+								else
+									*ghost_move=LEFT;
+							}
 							else
-								*ghost_move=LEFT;
-						}
-						else
-						{
-							if((a_ghost->y-*pos_y)<0)
-								*ghost_move=DOWN;
+							{
+								if((a_ghost->y-*pos_y)<0)
+									*ghost_move=DOWN;
+								else
+									*ghost_move=UP;
+							}
+							break;
+						case CYAN:
+							if(abs(a_ghost->x-*pos_x) > abs(a_ghost->y-*pos_y))
+							{
+								if((a_ghost->x-*pos_x)<0)
+									*ghost_move=RIGHT;
+								else
+									*ghost_move=LEFT;
+							}
 							else
-								*ghost_move=UP;
-						}
-						break;
-					case CYAN:
-						*ghost_move=rand()%4;
-						break;
-					default:
-						printw("what color?\n");
+							{
+								if((a_ghost->y-*pos_y)<0)
+									*ghost_move=DOWN;
+								else
+									*ghost_move=UP;
+							}
+							break;
+						default:
+							printw("what color?\n");
+					}
+					a_ghost->chase--;
 				}
+				else
+				{
+					*ghost_move=rand()%4;
+				}
+				if(*tour % 80==0)
+					switch(a_ghost->color)
+					{
+						case RED:
+							a_ghost->chase=60;
+							break;
+						case ROSE:
+							a_ghost->chase=50;
+							break;
+						case CYAN:
+							a_ghost->chase=35;
+							break;
+						case ORANGE:
+							a_ghost->chase=25;
+							break;
+						default:
+							printw("what color?\n");
+					}
+					
 			}
 }
