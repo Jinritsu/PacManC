@@ -28,9 +28,9 @@ void afficheSquare(Square *sqrt)
 						break;
 					case superball: printw("\u2022");
 						break;
-					case cherry: printw("🍒");
+					case cherry: printw("\u0cb9");
 						break;
-					case strawberry: printw("🍓");
+					case strawberry: printw("\u058d");
 						break;
 					case wallH: printw("\u2503");
 						break;
