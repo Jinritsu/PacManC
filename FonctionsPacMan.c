@@ -30,7 +30,7 @@ void afficheSquare(Square *sqrt)
 						break;
 					case cherry: printw("\u0cb9");
 						break;
-					case strawberry: printw("\u058d");
+					case strawberry: printw("\ua89e");
 						break;
 					case wallH: printw("\u2503");
 						break;

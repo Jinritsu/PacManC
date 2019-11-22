@@ -25,6 +25,9 @@ int main(int argc, char* argv[])
 	nodelay(stdscr, TRUE);
 	timeout(1000);
 	
+	//score de jeu
+	int score=0;
+	
 	//position de PAC MAN
 	int pos_x;
 	int pos_y;
@@ -60,8 +63,8 @@ int main(int argc, char* argv[])
 	}
 	init_pair(5, COLOR_BLUE,COLOR_BLACK);
 	Coloration a_color=CYAN;
+	//tours de jeu (pour les fantomes)
 	int tour=0;
-	
 	//déplacement des fantomes
 	int ghost_move;
 	//grille de jeu
@@ -89,6 +92,7 @@ int main(int argc, char* argv[])
 			int hauteur=0;
 			int caractere_actuel=0;
 			int ind_ghost=0;
+			printw("score: %d",score);
 			printw("\n");
 			//grille de jeu
 			do
@@ -267,6 +271,17 @@ int main(int argc, char* argv[])
 		for (int i = 0; i < 4; i++)
 		{
 			ghostMoveChoice(&ghosts[i],&power_state,&ghost_move,&pos_x,&pos_y,&tour,&grid[pos_y][pos_x]);
+			if ( ghosts[i].y == pos_y && ghosts[i].x==pos_x && power_state!=0)
+			{
+				moveGhost(&grid[ghosts[i].y][ghosts[i].x],&grid[HAUTEUR/2][LARGEUR/2],&pos_x,&pos_y,&ghosts[i],&power_state, &loop_game,ghost_move);
+				ghosts[i].x=LARGEUR/2;
+				ghosts[i].y=HAUTEUR/2;
+				ghosts[i].state=10;
+			}
+			else if ( ghosts[i].y == pos_y && ghosts[i].x==pos_x && ghosts[i].state==0)
+			{
+				loop_game = 0;
+			}
 			//direction où se bougent les fantômes
 			switch(ghost_move)
 			{
@@ -296,7 +311,6 @@ int main(int argc, char* argv[])
 			}
 			else if ( ghosts[i].y == pos_y && ghosts[i].x==pos_x && ghosts[i].state==0)
 			{
-				printw("perdu! un fantôme vous a attrapé\n");
 				loop_game = 0;
 			}
 			if (ghosts[i].state!=0)
@@ -314,6 +328,7 @@ int main(int argc, char* argv[])
 		
 		//mise a jour interface
 		clear();
+		printw("score: %d",score);
 		printw("\n");
 		for(int j=0; j<HAUTEUR;j++)
 		{
@@ -387,6 +402,8 @@ int main(int argc, char* argv[])
 			tour=0;
 		refresh();
 	}
+	printw("perdu! un fantôme vous a attrapé\n");
+	refresh();
 	ch = getch();
 	endwin();
 	return 0;
