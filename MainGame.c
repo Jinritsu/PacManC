@@ -246,19 +246,19 @@ int main(int argc, char* argv[])
 		switch(ch)
 		{
 			case KEY_UP:
-				movePacMan(&grid[pos_y][pos_x],&grid[pos_y-1][pos_x],&pos_x,&pos_y,UP,&power_state);
+				movePacMan(&grid[pos_y][pos_x],&grid[pos_y-1][pos_x],&pos_x,&pos_y,UP,&power_state, &score);
 				break;
 			//mouvement bas
 			case KEY_DOWN:
-				movePacMan(&grid[pos_y][pos_x],&grid[pos_y+1][pos_x],&pos_x,&pos_y,DOWN,&power_state);
+				movePacMan(&grid[pos_y][pos_x],&grid[pos_y+1][pos_x],&pos_x,&pos_y,DOWN,&power_state, &score);
 				break;
 			//mouvement gauche
 			case KEY_LEFT:
-				movePacMan(&grid[pos_y][pos_x],&grid[pos_y][pos_x-1],&pos_x,&pos_y,LEFT,&power_state);
+				movePacMan(&grid[pos_y][pos_x],&grid[pos_y][pos_x-1],&pos_x,&pos_y,LEFT,&power_state, &score);
 				break;
 			//mouvement droite
 			case KEY_RIGHT:
-				movePacMan(&grid[pos_y][pos_x],&grid[pos_y][pos_x+1],&pos_x,&pos_y,RIGHT,&power_state);
+				movePacMan(&grid[pos_y][pos_x],&grid[pos_y][pos_x+1],&pos_x,&pos_y,RIGHT,&power_state, &score);
 				break;
 			//quitter le jeu
 			case 'q':

@@ -59,10 +59,30 @@ void afficheSquare(Square *sqrt)
 }
 
 
-void movePacMan(Square* grid_old,Square* grid_new,int* pos_x,int* pos_y,int move,int* power_state)
+void movePacMan(Square* grid_old,Square* grid_new,int* pos_x,int* pos_y,int move,int* power_state,int* score)
 {
-	if(grid_new->object == superball)
-		*power_state = POWER_STATE;
+	switch(grid_new->object)
+	{
+		case superball:
+			*power_state = POWER_STATE;
+			*score+= 20;
+			break;
+		case ball:
+			*score+= 10;
+			break;
+		case cherry:
+			*score+=100;
+			break;
+		case strawberry:
+			*score+=200;
+			break;
+		default:
+			*score+=0;
+	}
+	
+	if(grid_new->person == ghost)
+		*score+=100;
+	
 	switch(move){
 		case UP:
 			if(grid_new->object != wallL && grid_new->object != wallH)
