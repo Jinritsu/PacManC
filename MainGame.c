@@ -27,6 +27,7 @@ int main(int argc, char* argv[])
 	
 	//score de jeu
 	int score=0;
+	int score2=0;
 	
 	//position de PAC MAN
 	int pos_x;
